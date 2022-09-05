@@ -4,251 +4,126 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
         <title>First Three JS Project</title> <!--Tutorial located at: https://medium.com/@benjamin.c.coleman/the-beginners-guide-to-beginning-three-js-c36b8947c2aa -->
-        <style>
-            body {
-                margin:0;
-            }
-            #c {
-                width: 100%;
-                height: 100%;
-                display: block;
-            }
-            #view1,#view2 {
-                width: 100%;
-                height: 100%;
-            }
-        </style>
     </head>
     <body>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js" type="text/javascript"></script>
-        <canvas id="c"></canvas>
-            <div class="split">
-                <div id="view1" tabindex="1"></div>
-                <div id="view2" tabindex="2"></div>
-            </div>
-        <!--<script>
-            const scene = new THREE.Scene()
-            const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
-            const canvas = document.getElementById("c")
-            const renderer = new THREE.WebGLRenderer({ antialias: true},{canvas})
-
-            renderer.setSize(window.innerWidth, window.innerHeight)
-            renderer.setClearColor("#222222")
-            
-            camera.position.z = 4
-
-            var geometry = new THREE.BoxGeometry(1, 1, 1)
-            var material = new THREE.MeshBasicMaterial({color: 0xff0051})
-            var cube = new THREE.Mesh (geometry, material)
-            scene.add(cube)
-
-            var geometry = new THREE.BoxGeometry( 3, 3, 3)
-            var material = new THREE.MeshBasicMaterial( {
-            color: "#dadada", wireframe: true, transparent: true
-            })
-            var wireframeCube = new THREE.Mesh ( geometry, material )
-            scene.add( wireframeCube )
-
-            function animate() {
-                requestAnimationFrame( animate )
-                cube.rotation.x += 0.04;
-                cube.rotation.y += 0.04;
-                wireframeCube.rotation.x -= 0.01;
-                wireframeCube.rotation.y -= 0.01;
-                renderer.render(scene,camera)/*Renderer line needs to be at end of code to work, anything after this line will not be rendered.*/
-            }
-            animate()
-        </script>      -->
-        <script>
-            
-            
-            function main() {
-              const canvas = document.querySelector('#c');
-              const view1Elem = document.querySelector('#view1');
-              const view2Elem = document.querySelector('#view2');
-              const renderer = new THREE.WebGLRenderer({canvas});
-            
-              const fov = 45;
-              const aspect = 2;  // the canvas default
-              const near = 5;
-              const far = 100;
-              const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-              camera.position.set(0, 10, 20);
-            
-              const cameraHelper = new THREE.CameraHelper(camera);
-            
-              class MinMaxGUIHelper {
-                constructor(obj, minProp, maxProp, minDif) {
-                  this.obj = obj;
-                  this.minProp = minProp;
-                  this.maxProp = maxProp;
-                  this.minDif = minDif;
-                }
-                get min() {
-                  return this.obj[this.minProp];
-                }
-                set min(v) {
-                  this.obj[this.minProp] = v;
-                  this.obj[this.maxProp] = Math.max(this.obj[this.maxProp], v + this.minDif);
-                }
-                get max() {
-                  return this.obj[this.maxProp];
-                }
-                set max(v) {
-                  this.obj[this.maxProp] = v;
-                  this.min = this.min;  // this will call the min setter
-                }
-              }
-            
-              
-            
-              
-            
-              const camera2 = new THREE.PerspectiveCamera(
-                60,  // fov
-                2,   // aspect
-                0.1, // near
-                500, // far
-              );
-              camera2.position.set(40, 10, 30);
-              camera2.lookAt(0, 5, 0);
-            
-              
-            
-              const scene = new THREE.Scene();
-              scene.background = new THREE.Color('black');
-              scene.add(cameraHelper);
-            
+        
+          <!--  <script>
               {
-                const planeSize = 40;
-            
-                const loader = new THREE.TextureLoader();
-                const texture = loader.load('resources/images/checker.png');
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.magFilter = THREE.NearestFilter;
-                const repeats = planeSize / 2;
-                texture.repeat.set(repeats, repeats);
-            
-                const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-                const planeMat = new THREE.MeshPhongMaterial({
-                  map: texture,
-                  side: THREE.DoubleSide,
-                });
-                const mesh = new THREE.Mesh(planeGeo, planeMat);
-                mesh.rotation.x = Math.PI * -.5;
-                scene.add(mesh);
-              }
-              {
-                const cubeSize = 4;
-                const cubeGeo = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
-                const mesh = new THREE.Mesh(cubeGeo, cubeMat);
-                mesh.position.set(cubeSize + 1, cubeSize / 2, 0);
-                scene.add(mesh);
-              }
-              {
-                const sphereRadius = 3;
-                const sphereWidthDivisions = 32;
-                const sphereHeightDivisions = 16;
-                const sphereGeo = new THREE.SphereGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
-                const sphereMat = new THREE.MeshPhongMaterial({color: '#CA8'});
-                const mesh = new THREE.Mesh(sphereGeo, sphereMat);
-                mesh.position.set(-sphereRadius - 1, sphereRadius + 2, 0);
-                scene.add(mesh);
-              }
-            
-              {
-                const color = 0xFFFFFF;
-                const intensity = 1;
-                const light = new THREE.DirectionalLight(color, intensity);
-                light.position.set(0, 10, 0);
-                light.target.position.set(-5, 0, 0);
-                scene.add(light);
-                scene.add(light.target);
-              }
-            
-              function resizeRendererToDisplaySize(renderer) {
-                const canvas = renderer.domElement;
-                const width = canvas.clientWidth;
-                const height = canvas.clientHeight;
-                const needResize = canvas.width !== width || canvas.height !== height;
-                if (needResize) {
-                  renderer.setSize(width, height, false);
-                }
-                return needResize;
-              }
-            
-              function setScissorForElement(elem) {
-                const canvasRect = canvas.getBoundingClientRect();
-                const elemRect = elem.getBoundingClientRect();
-            
-                // compute a canvas relative rectangle
-                const right = Math.min(elemRect.right, canvasRect.right) - canvasRect.left;
-                const left = Math.max(0, elemRect.left - canvasRect.left);
-                const bottom = Math.min(elemRect.bottom, canvasRect.bottom) - canvasRect.top;
-                const top = Math.max(0, elemRect.top - canvasRect.top);
-            
-                const width = Math.min(canvasRect.width, right - left);
-                const height = Math.min(canvasRect.height, bottom - top);
-            
-                // setup the scissor to only render to that part of the canvas
-                const positiveYUpBottom = canvasRect.height - bottom;
-                renderer.setScissor(left, positiveYUpBottom, width, height);
-                renderer.setViewport(left, positiveYUpBottom, width, height);
-            
-                // return the aspect
-                return width / height;
-              }
-            
-              function render() {
-            
-                resizeRendererToDisplaySize(renderer);
-            
-                // turn on the scissor
+                const scene = new THREE.Scene()
+                const renderer = new THREE.WebGLRenderer({ antialias: true });
+                const createCamera = () => {
+                  const fov = 45;
+                  const aspect = width / height;
+                  const near = 1;
+                  const far = 100000;
+                  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+                  return camera;
+                };
+                const cameraTop = createCamera();
+                cameraTop.position.z = -0.1;
+                cameraTop.position.y = 1500;
+                cameraTop.lookAt(new THREE.Vector3(0, 0, 0));
+                
+                const cameraFront = createCamera();
+                cameraFront.position.x = 800;
+                cameraFront.lookAt(new THREE.Vector3(0, 0, 0));
+
+                var geometry = new THREE.BoxGeometry(1, 1, 1)
+              var material = new THREE.MeshBasicMaterial({color: 0xff0051})
+              var cube = new THREE.Mesh (geometry, material)
+              scene.add(cube)
+  
+              var geometry = new THREE.BoxGeometry( 3, 3, 3)
+              var material = new THREE.MeshBasicMaterial( {
+              color: "#dadada", wireframe: true, transparent: true
+              })
+              var wireframeCube = new THREE.Mesh ( geometry, material )
+              scene.add( wireframeCube )
+                
+                const controls = new THREE.OrbitControls(cameraTop, renderer.domElement);
+                invalidation.then(() => (controls.dispose(), renderer.dispose()));
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(devicePixelRatio);
+                renderer.render(scene, cameraTop);
+                
+                let left = 0;
+                const bottom = 0;
+
+                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissorTest(true);
-            
-                // render the original view
-                {
-                  const aspect = setScissorForElement(view1Elem);
-            
-                  // adjust the camera for this aspect
-                  camera.aspect = aspect;
-                  camera.updateProjectionMatrix();
-                  cameraHelper.update();
-            
-                  // don't draw the camera helper in the original view
-                  cameraHelper.visible = false;
-            
-                  scene.background.set(0x000000);
-            
-                  // render
-                  renderer.render(scene, camera);
-                }
-            
-                // render from the 2nd camera
-                {
-                  const aspect = setScissorForElement(view2Elem);
-            
-                  // adjust the camera for this aspect
-                  camera2.aspect = aspect;
-                  camera2.updateProjectionMatrix();
-            
-                  // draw the camera helper in the 2nd view
-                  cameraHelper.visible = true;
-            
-                  scene.background.set(0x000040);
-            
-                  renderer.render(scene, camera2);
-                }
-            
-                requestAnimationFrame(render);
+                renderer.setClearColor(new THREE.Color(1, 1, 1));
+                cameraTop.aspect = Math.floor(width / 2) / height;
+                cameraTop.updateProjectionMatrix();
+                renderer.render(scene, cameraTop);
+                  
+                left = Math.floor(width / 2);
+                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissorTest(true);
+                renderer.setClearColor(new THREE.Color(1, 1, 1));
+                cameraFront.aspect = Math.floor(width / 2) / height;
+                cameraFront.updateProjectionMatrix();
+                renderer.render(scene, cameraFront);
+                
+              
+                
+              return renderer.domElement
               }
-            
-              requestAnimationFrame(render);
-            }
-            
-            main();
-            </script>
+            </script> -->
+            <script>
+              const scene = new THREE.Scene()
+              const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
+              const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
+              const renderer = new THREE.WebGLRenderer({ antialias: true})
+  
+              renderer.setSize(window.innerWidth, window.innerHeight)
+              renderer.setClearColor("#222222")
+              document.body.appendChild(renderer.domElement)
+              camera1.position.z = 5
+              camera2.position.z = 4
+  
+              var geometry = new THREE.BoxGeometry(1, 1, 1)
+              var material = new THREE.MeshBasicMaterial({color: 0xff0051})
+              var cube = new THREE.Mesh (geometry, material)
+              scene.add(cube)
+  
+              var geometry = new THREE.BoxGeometry( 3, 3, 3)
+              var material = new THREE.MeshBasicMaterial( {
+              color: "#dadada", wireframe: true, transparent: true
+              })
+              var wireframeCube = new THREE.Mesh ( geometry, material )
+              scene.add( wireframeCube )
+  
+              function animate() {
+                  requestAnimationFrame( animate )
+                  cube.rotation.x += 0.04;
+                  cube.rotation.y += 0.04;
+                  wireframeCube.rotation.x -= 0.01;
+                  wireframeCube.rotation.y -= 0.01;
+                  //renderer.render(scene,camera)/*Renderer line needs to be at end of code to work, anything after this line will not be rendered.*/
+              }
+
+              renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissorTest(true);
+                renderer.setClearColor(new THREE.Color(1, 1, 1));
+                camera1.aspect = Math.floor(width / 2) / height;
+                camera1.updateProjectionMatrix();
+                renderer.render(scene, camera1);
+                  
+                left = Math.floor(width / 2);
+                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissorTest(true);
+                renderer.setClearColor(new THREE.Color(1, 1, 1));
+                camera2.aspect = Math.floor(width / 2) / height;
+                camera2.updateProjectionMatrix();
+                renderer.render(scene, camera2);
+
+                return renderer.domElement
+              animate()
+          </script>       
     </body>
 </html>
