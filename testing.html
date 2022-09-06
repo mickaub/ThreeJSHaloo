@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+        <title>First Three JS Project</title> <!--Tutorial located at: https://medium.com/@benjamin.c.coleman/the-beginners-guide-to-beginning-three-js-c36b8947c2aa -->
+    </head>
+    <body>        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js" type="text/javascript"        
+        ></script>        
+            <script>
+              const scene = new THREE.Scene()
+              scene.background = new THREE.Color(0xbfe3dd); //background color
+              const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
+              const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
+              const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
+              /*Camera1 is left, Camera2 is right*/
+  
+              renderer.setSize(window.innerWidth, window.innerHeight)
+              //renderer.setClearColor("#222222")
+              document.body.appendChild(renderer.domElement)
+              camera1.position.z = 5
+              camera1.position.x = -3
+              camera2.position.z = 5
+              camera2.position.x = 3
+  
+              const geometry1 = new THREE.BoxGeometry(1, 1, 1)
+              const material1 = new THREE.MeshBasicMaterial({color: 0x800080})
+              const cube = new THREE.Mesh (geometry1, material1)
+              cube.position.set (-3,0,0)
+              scene.add(cube)             
+
+            const sphereGeometry = new THREE.IcosahedronGeometry( 1, 5 ); //radius and complexity
+            const sphereMaterial = new THREE.MeshBasicMaterial( { color: 0xBB00FF } );
+            const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+            sphere.position.set (3,0.5,0); //x y z in threeJS, for blender x z y
+            scene.add(sphere)
+
+            /*const geometry2 = new THREE.CylinderGeometry(2,2,10,8); //top radius, bottom radius, height, radial segments
+            const material2 = new THREE.MeshBasicMaterial({color: 0x8855AA});
+            const cylinder = new THREE.Mesh(geometry2,material2);
+            cylinder.position.set (0,-2,-10);            
+            cylinder.rotation.setFromVector3 (new THREE.Vector3((Math.PI/2),0,0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinder.scale.set(8,1,1)
+            scene.add(cylinder);*/
+
+            const geometry2 = new THREE.BoxGeometry(10,1,60)
+            const material2 = new THREE.MeshBasicMaterial({color: 0xAAAAAA})
+            const cube2 = new THREE.Mesh (geometry2,material2)
+            cube2.position.set (0,-1,0)
+            scene.add(cube2)
+
+            const geometry3 = new THREE.BoxGeometry(10,1,60)
+            const material3 = new THREE.MeshBasicMaterial({color: 0xBBBBBB})
+            const cube3 = new THREE.Mesh (geometry3,material3)
+            cube3.position.set (0,-1,-60)
+            cube3.rotation.setFromVector3(new THREE.Vector3((Math.PI/4),0,0));
+            scene.add(cube3)
+  
+              function animate() {
+                  requestAnimationFrame( animate );
+                  if(cube.position.z>-30){ //negative z values go away from the camera
+                    cube.position.z -= 0.1;
+                    camera1.position.z -= 0.1;
+                  }
+                  
+                  //cylinder.rotation.x += (1/360);
+                  //cube.rotation.x += 0.04;
+                  //cube.rotation.y += 0.04;                  
+                  render();
+                  //renderer.render(scene,camera)/*Renderer line needs to be at end of code to work, anything after this line will not be rendered.*/
+              }
+
+              function render() 
+              {
+                //var SCREEN_W, SCREEN_H;
+                let SCREEN_W = window.innerWidth;
+                let SCREEN_H = window.innerHeight;
+                let left = 1;
+                let bottom = 1;
+                let width = SCREEN_W - 2;
+                let height = SCREEN_H - 2;
+
+                //left = 1; bottom = 1; width = SCREEN_W-2; height = SCREEN_H-2;
+
+                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissorTest(true);
+                renderer.setClearColor(new THREE.Color(1, 1, 1));
+                camera1.aspect = Math.floor(width / 2) / height;
+                camera1.updateProjectionMatrix();
+                renderer.render(scene, camera1);
+                  
+                left = Math.floor(width / 2); //bottom, width and height are the same
+                //left = 0.5*SCREEN_W+1; bottom = 1; width = 0.5*SCREEN_W-2; height = SCREEN_H-2;
+                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+                renderer.setScissorTest(true);
+                renderer.setClearColor(new THREE.Color(1, 1, 1));
+                camera2.aspect = Math.floor(width / 2) / height;
+                camera2.updateProjectionMatrix();
+                renderer.render(scene, camera2);
+              }
+              animate()
+          </script>      
+    </body>
+</html>
