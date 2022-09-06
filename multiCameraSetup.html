@@ -77,6 +77,7 @@
               const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
               const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
               const renderer = new THREE.WebGLRenderer({ antialias: true})
+              /*Camera1 is left, Camera2 is right*/
   
               renderer.setSize(window.innerWidth, window.innerHeight)
               renderer.setClearColor("#222222")
@@ -97,15 +98,26 @@
               scene.add( wireframeCube )
   
               function animate() {
-                  requestAnimationFrame( animate )
+                  requestAnimationFrame( animate );
                   cube.rotation.x += 0.04;
                   cube.rotation.y += 0.04;
                   wireframeCube.rotation.x -= 0.01;
                   wireframeCube.rotation.y -= 0.01;
+                  render();
                   //renderer.render(scene,camera)/*Renderer line needs to be at end of code to work, anything after this line will not be rendered.*/
               }
 
-              renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+              function render() 
+              {
+                var SCREEN_W, SCREEN_H;
+                SCREEN_W = window.innerWidth;
+                SCREEN_H = window.innerHeight;
+
+                var left,bottom,width,height;
+
+                left = 1; bottom = 1; width = SCREEN_W-2; height = SCREEN_H-2;
+
+                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissor(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissorTest(true);
                 renderer.setClearColor(new THREE.Color(1, 1, 1));
@@ -114,6 +126,7 @@
                 renderer.render(scene, camera1);
                   
                 left = Math.floor(width / 2);
+                //left = 0.5*SCREEN_W+1; bottom = 1; width = 0.5*SCREEN_W-2; height = SCREEN_H-2;
                 renderer.setViewport(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissor(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissorTest(true);
@@ -121,8 +134,7 @@
                 camera2.aspect = Math.floor(width / 2) / height;
                 camera2.updateProjectionMatrix();
                 renderer.render(scene, camera2);
-
-                return renderer.domElement
+              }
               animate()
           </script>       
     </body>
