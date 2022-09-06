@@ -5,78 +5,14 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
         <title>First Three JS Project</title> <!--Tutorial located at: https://medium.com/@benjamin.c.coleman/the-beginners-guide-to-beginning-three-js-c36b8947c2aa -->
     </head>
-    <body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js" type="text/javascript"></script>
-        
-          <!--  <script>
-              {
-                const scene = new THREE.Scene()
-                const renderer = new THREE.WebGLRenderer({ antialias: true });
-                const createCamera = () => {
-                  const fov = 45;
-                  const aspect = width / height;
-                  const near = 1;
-                  const far = 100000;
-                  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-                  return camera;
-                };
-                const cameraTop = createCamera();
-                cameraTop.position.z = -0.1;
-                cameraTop.position.y = 1500;
-                cameraTop.lookAt(new THREE.Vector3(0, 0, 0));
-                
-                const cameraFront = createCamera();
-                cameraFront.position.x = 800;
-                cameraFront.lookAt(new THREE.Vector3(0, 0, 0));
-
-                var geometry = new THREE.BoxGeometry(1, 1, 1)
-              var material = new THREE.MeshBasicMaterial({color: 0xff0051})
-              var cube = new THREE.Mesh (geometry, material)
-              scene.add(cube)
-  
-              var geometry = new THREE.BoxGeometry( 3, 3, 3)
-              var material = new THREE.MeshBasicMaterial( {
-              color: "#dadada", wireframe: true, transparent: true
-              })
-              var wireframeCube = new THREE.Mesh ( geometry, material )
-              scene.add( wireframeCube )
-                
-                const controls = new THREE.OrbitControls(cameraTop, renderer.domElement);
-                invalidation.then(() => (controls.dispose(), renderer.dispose()));
-                renderer.setSize(width, height);
-                renderer.setPixelRatio(devicePixelRatio);
-                renderer.render(scene, cameraTop);
-                
-                let left = 0;
-                const bottom = 0;
-
-                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
-                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
-                renderer.setScissorTest(true);
-                renderer.setClearColor(new THREE.Color(1, 1, 1));
-                cameraTop.aspect = Math.floor(width / 2) / height;
-                cameraTop.updateProjectionMatrix();
-                renderer.render(scene, cameraTop);
-                  
-                left = Math.floor(width / 2);
-                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
-                renderer.setScissor(left, bottom, Math.floor(width / 2), height);
-                renderer.setScissorTest(true);
-                renderer.setClearColor(new THREE.Color(1, 1, 1));
-                cameraFront.aspect = Math.floor(width / 2) / height;
-                cameraFront.updateProjectionMatrix();
-                renderer.render(scene, cameraFront);
-                
-              
-                
-              return renderer.domElement
-              }
-            </script> -->
+    <body>        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js" type="text/javascript"        
+        ></script>        
             <script>
               const scene = new THREE.Scene()
               const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
               const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
-              const renderer = new THREE.WebGLRenderer({ antialias: true})
+              const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
               /*Camera1 is left, Camera2 is right*/
   
               renderer.setSize(window.innerWidth, window.innerHeight)
@@ -109,13 +45,15 @@
 
               function render() 
               {
-                var SCREEN_W, SCREEN_H;
-                SCREEN_W = window.innerWidth;
-                SCREEN_H = window.innerHeight;
+                //var SCREEN_W, SCREEN_H;
+                let SCREEN_W = window.innerWidth;
+                let SCREEN_H = window.innerHeight;
+                let left = 1;
+                let bottom = 1;
+                let width = SCREEN_W - 2;
+                let height = SCREEN_H - 2;
 
-                var left,bottom,width,height;
-
-                left = 1; bottom = 1; width = SCREEN_W-2; height = SCREEN_H-2;
+                //left = 1; bottom = 1; width = SCREEN_W-2; height = SCREEN_H-2;
 
                 renderer.setViewport(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissor(left, bottom, Math.floor(width / 2), height);
@@ -125,7 +63,7 @@
                 camera1.updateProjectionMatrix();
                 renderer.render(scene, camera1);
                   
-                left = Math.floor(width / 2);
+                left = Math.floor(width / 2); //bottom, width and height are the same
                 //left = 0.5*SCREEN_W+1; bottom = 1; width = 0.5*SCREEN_W-2; height = SCREEN_H-2;
                 renderer.setViewport(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissor(left, bottom, Math.floor(width / 2), height);
@@ -136,6 +74,6 @@
                 renderer.render(scene, camera2);
               }
               animate()
-          </script>       
+          </script>      
     </body>
 </html>
