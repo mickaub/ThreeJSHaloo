@@ -38,7 +38,7 @@
 
                 
                   var object = data.scene;
-                  object.position.set(-3,0,0);
+                  object.position.set(0, -10, -0.75);
 
 
                   
@@ -50,10 +50,11 @@
               renderer.setSize(window.innerWidth, window.innerHeight)
               //renderer.setClearColor("#222222")
               document.body.appendChild(renderer.domElement)
-              camera1.position.z = 5
-              camera1.position.x = -3
+              //camera1.position.z = 5
+             // camera1.position.x = -3
               camera2.position.z = 5
               camera2.position.x = 3
+              camera1.position.set(5,5,5);
   
               const geometry1 = new THREE.BoxGeometry(1, 1, 1)
               const material1 = new THREE.MeshBasicMaterial({color: 0x800080})
@@ -124,7 +125,7 @@
                   requestAnimationFrame( animate );
                   if(cube.position.z>-30){ //negative z values go away from the camera
                     cube.position.z -= 0.1;
-                    camera1.position.z -= 0.1;
+                    //camera1.position.z -= 0.1;
                   }
                   
                   //cylinder.rotation.x += (1/360);
