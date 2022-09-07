@@ -6,16 +6,47 @@
         <title>First Three JS Project</title> <!--Tutorial located at: https://medium.com/@benjamin.c.coleman/the-beginners-guide-to-beginning-three-js-c36b8947c2aa -->
     </head>
     <body>        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js" type="text/javascript"        
-        ></script>        
+        <!--<script src="https://raw.githubusercontent.com/mrdoob/three.js/dev/build/three.js" type="text/javascript"        
+        ></script>  
+        <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js" type="text/javascript"></script>      -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js" integrity="sha512-yNJzAsg5JyP91u+sLHlUDULMBd3hmEiVkYeeN1cQBKaLZ7EyT6oH2u5THNIRM2Fu6VKcZJv+F/QAp1h/qzy9Ow==" crossorigin="anonymous"></script>
+        <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
             <script>
               const scene = new THREE.Scene()
               scene.background = new THREE.Color(0xbfe3dd); //background color
               const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
               const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
-              const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
               /*Camera1 is left, Camera2 is right*/
-  
+              const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
+
+             /* const loader = new THREE.GLTFLoader();
+             // const loader = new THREE.GLTFLoader()//.setPath('/cube.gltf');
+              loader.load('cube.gltf',
+                function (gltf) {
+                  gltf.scene.position.z = 5;
+                  scene.add(gltf.scene);                  
+                },                
+                (error) => {
+                  console.log(error)
+                }
+                );
+              */
+
+              var loader = new THREE.GLTFLoader();
+              loader.crossOrigin = true;
+              loader.load( 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/39255/ladybug.gltf', function ( data ) {
+
+                
+                  var object = data.scene;
+                  object.position.set(-3,0,0);
+
+
+                  
+
+                  scene.add( object );
+
+              });
+                
               renderer.setSize(window.innerWidth, window.innerHeight)
               //renderer.setClearColor("#222222")
               document.body.appendChild(renderer.domElement)
@@ -31,8 +62,40 @@
               scene.add(cube)             
 
             const sphereGeometry = new THREE.IcosahedronGeometry( 1, 5 ); //radius and complexity
-            const sphereMaterial = new THREE.MeshBasicMaterial( { color: 0xBB00FF } );
-            const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+            //const sphereMaterial = new THREE.MeshBasicMaterial( { color: 0xBB00FF } );
+
+            var Gradmaterial = new THREE.ShaderMaterial({
+            uniforms: {
+              color1: {
+                value: new THREE.Color("red")
+              },
+              color2: {
+                value: new THREE.Color("purple")
+              }
+            },
+            vertexShader: `
+              varying vec2 vUv;
+
+              void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+              }
+            `,
+            fragmentShader: `
+              uniform vec3 color1;
+              uniform vec3 color2;
+            
+              varying vec2 vUv;
+              
+              void main() {
+                
+                gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
+              }
+            `,
+            wireframe: true
+          });
+          const sphere = new THREE.Mesh(sphereGeometry, Gradmaterial);
+            //const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
             sphere.position.set (3,0.5,0); //x y z in threeJS, for blender x z y
             scene.add(sphere)
 
