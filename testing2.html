@@ -2,7 +2,7 @@
 <html>
     <head><style>
         canvas { display: block; }
-html { overflow: hidden; background: #000; }
+        html { overflow: hidden; background: white; }
     </style></head>
     <body>
         <script>console.clear();</script>
@@ -27,7 +27,7 @@ render();
 var scene = new THREE.Scene();
 
 var camera = new THREE.PerspectiveCamera( 80, window.innerWidth / window.innerHeight, 0.1, 800 );
-camera.position.set(5,5,5);
+camera.position.set(5,20,5);
 
 var renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setPixelRatio( window.devicePixelRatio );
@@ -88,12 +88,12 @@ scene.add( light2 );
 
 var loader = new THREE.GLTFLoader();
 loader.crossOrigin = true;
-loader.load( 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/39255/ladybug.gltf', function ( data ) {
+loader.load( 'cube.gltf', function ( data ) {
 
   
     var object = data.scene;
-     object.position.set(0, -10, -0.75);
-
+     object.position.set(0,0, 0);
+    object.scale.set(100,100,100);
 
     
 
