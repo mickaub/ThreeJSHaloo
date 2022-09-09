@@ -18,48 +18,26 @@
               const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
               /*Camera1 is left, Camera2 is right*/
               const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
-
-             /* const loader = new THREE.GLTFLoader();
-             // const loader = new THREE.GLTFLoader()//.setPath('/cube.gltf');
-              loader.load('cube.gltf',
-                function (gltf) {
-                  gltf.scene.position.z = 5;
-                  scene.add(gltf.scene);                  
-                },                
-                (error) => {
-                  console.log(error)
-                }
-                );
-              */
-
-              var loader = new THREE.GLTFLoader();
-              loader.crossOrigin = true;
-              loader.load( 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/39255/ladybug.gltf', function ( data ) {
-
-                
-                  var object = data.scene;
-                  object.position.set(0, -10, -0.75);
-
-
-                  
-
-                  scene.add( object );
-
-              });
-                
+           
               renderer.setSize(window.innerWidth, window.innerHeight)
               //renderer.setClearColor("#222222")
               document.body.appendChild(renderer.domElement)
               //camera1.position.z = 5
              // camera1.position.x = -3
-              camera2.position.z = 5
-              camera2.position.x = 3
-              camera1.position.set(5,5,5);
+              camera2.position.z = -50
+              camera2.position.x = -5
+              camera2.rotation.y = -1.5
+              
+              //camera1.position.set(5,0,5); //x y z, x z y
+              camera1.position.z = -25
+              camera1.position.x = 3
+              camera1.position.y = 50
+              camera1.rotation.x = -((Math.PI/2)+0.0)
   
               const geometry1 = new THREE.BoxGeometry(1, 1, 1)
               const material1 = new THREE.MeshBasicMaterial({color: 0x800080})
               const cube = new THREE.Mesh (geometry1, material1)
-              cube.position.set (-3,0,0)
+              cube.position.set (-3,0,-50)
               scene.add(cube)             
 
             const sphereGeometry = new THREE.IcosahedronGeometry( 1, 5 ); //radius and complexity
@@ -117,17 +95,47 @@
             const geometry3 = new THREE.BoxGeometry(10,1,60)
             const material3 = new THREE.MeshBasicMaterial({color: 0xBBBBBB})
             const cube3 = new THREE.Mesh (geometry3,material3)
-            cube3.position.set (0,-1,-60)
-            cube3.rotation.setFromVector3(new THREE.Vector3((Math.PI/4),0,0));
+            cube3.position.set (30,-1,-65)
+            cube3.rotation.setFromVector3(new THREE.Vector3(0,-1,0));
             scene.add(cube3)
+
+            const geometry4 = new THREE.CylinderGeometry(2,2,10,8); //top radius, bottom radius, height, radial segments
+            const material4 = new THREE.MeshBasicMaterial({color: 0x8855AA});
+            const cylinder = new THREE.Mesh(geometry4,material4);
+            cylinder.position.set (0,-2.99,-41);            
+            cylinder.rotation.setFromVector3 (new THREE.Vector3(0,0.4,0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinder.scale.set(6,0.5,6)
+            scene.add(cylinder)
+
+            var xSpeed = 0.01;
+            var ySpeed = 0.01;
+
+            document.addEventListener("keydown", onDocumentKeyDown, false);
+            function onDocumentKeyDown(event) {
+                var keyCode = event.which;
+                if (keyCode == 87) {
+                    cube.position.z += ySpeed;
+                } else if (keyCode == 83) {
+                    cube.position.z -= ySpeed;
+                } else if (keyCode == 65) {
+                    cube.position.x -= xSpeed;
+                } else if (keyCode == 68) {
+                    cube.position.x += xSpeed;
+                } else if (keyCode == 32) {
+                    cube.position.set(0, 0, 0);
+                }
+            };
   
               function animate() {
                   requestAnimationFrame( animate );
-                  if(cube.position.z>-30){ //negative z values go away from the camera
+                  if(cube.position.z>-50){ //negative z values go away from the camera
                     cube.position.z -= 0.1;
-                    //camera1.position.z -= 0.1;
+
+                    camera2.position.z -= 0.1;
+                    
                   }
-                  
+                 // camera2.rotation.y -= 0.01;
+                  //console.log(camera2.rotation.y);
                   //cylinder.rotation.x += (1/360);
                   //cube.rotation.x += 0.04;
                   //cube.rotation.y += 0.04;                  
@@ -147,7 +155,7 @@
 
                 //left = 1; bottom = 1; width = SCREEN_W-2; height = SCREEN_H-2;
 
-                renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+                renderer.setViewport(left, bottom, Math.floor(width/2), height);
                 renderer.setScissor(left, bottom, Math.floor(width / 2), height);
                 renderer.setScissorTest(true);
                 renderer.setClearColor(new THREE.Color(1, 1, 1));
