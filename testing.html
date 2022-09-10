@@ -24,13 +24,14 @@
               document.body.appendChild(renderer.domElement)
               //camera1.position.z = 5
              // camera1.position.x = -3
-              camera2.position.z = -50
-              camera2.position.x = -5
-              camera2.rotation.y = -1.5
+              camera2.position.z = -48
+              camera2.position.x = -3
+              camera2.position.y = 1
+            
               
               //camera1.position.set(5,0,5); //x y z, x z y
-              camera1.position.z = -25
-              camera1.position.x = 3
+              camera1.position.z = -87
+              camera1.position.x = -23
               camera1.position.y = 50
               camera1.rotation.x = -((Math.PI/2)+0.0)
   
@@ -86,6 +87,8 @@
             cylinder.scale.set(8,1,1)
             scene.add(cylinder);*/
 
+            //2 first, 4 first circle, 3 second, 5 second circle, 6 third, 7 third circle, 8 fourth
+            //9 fourth circle, 10 final path, 11 final circle, 12 airship
             const geometry2 = new THREE.BoxGeometry(10,1,60)
             const material2 = new THREE.MeshBasicMaterial({color: 0xAAAAAA})
             const cube2 = new THREE.Mesh (geometry2,material2)
@@ -95,45 +98,129 @@
             const geometry3 = new THREE.BoxGeometry(10,1,60)
             const material3 = new THREE.MeshBasicMaterial({color: 0xBBBBBB})
             const cube3 = new THREE.Mesh (geometry3,material3)
-            cube3.position.set (30,-1,-65)
+            cube3.position.set (33,-1,-64)
             cube3.rotation.setFromVector3(new THREE.Vector3(0,-1,0));
             scene.add(cube3)
+
+            const thirdPath = new THREE.Mesh (geometry3,material3)
+            thirdPath.position.set (25,-1,-87)
+            thirdPath.rotation.setFromVector3(new THREE.Vector3(0,(Math.PI/2),0))
+            thirdPath.scale.set(1,1,1.3)
+            scene.add(thirdPath)
+
+            const fourthPath = new THREE.Mesh (geometry3,material3)
+            fourthPath.position.set (4,-1,-114)
+            fourthPath.rotation.setFromVector3(new THREE.Vector3(0,(Math.PI*0.75),0))
+            scene.add(fourthPath)
+
+            const finalPath = new THREE.Mesh (geometry3,material3)
+            finalPath.position.set (32,-1,-181)
+            finalPath.rotation.setFromVector3(new THREE.Vector3(0,0,0))
+            scene.add(finalPath)
 
             const geometry4 = new THREE.CylinderGeometry(2,2,10,8); //top radius, bottom radius, height, radial segments
             const material4 = new THREE.MeshBasicMaterial({color: 0x8855AA});
             const cylinder = new THREE.Mesh(geometry4,material4);
             cylinder.position.set (0,-2.99,-41);            
-            cylinder.rotation.setFromVector3 (new THREE.Vector3(0,0.4,0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
-            cylinder.scale.set(6,0.5,6)
+            cylinder.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinder.scale.set(6.5,0.5,6)
             scene.add(cylinder)
 
-            var xSpeed = 0.01;
-            var ySpeed = 0.01;
+            const geometry5 = new THREE.CylinderGeometry(12,12,5,8);
+            const cylinderSecond = new THREE.Mesh(geometry5,material4);
+            cylinderSecond.position.set (65,-2.99,-87);            
+            cylinderSecond.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinderSecond.scale.set(1,1,1)
+            scene.add(cylinderSecond)
 
-            document.addEventListener("keydown", onDocumentKeyDown, false);
+            
+            const cylinderThird = new THREE.Mesh(geometry5,material4);
+            cylinderThird.position.set (-23,-2.99,-87);            
+            cylinderThird.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinderThird.scale.set(1,1,1)
+            scene.add(cylinderThird)
+
+            
+            const cylinderFourth = new THREE.Mesh(geometry5,material4);
+            cylinderFourth.position.set (32,-2.99,-142);            
+            cylinderFourth.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinderFourth.scale.set(1,1,1)
+            scene.add(cylinderFourth)
+
+            
+            const cylinderFinal = new THREE.Mesh(geometry5,material4);
+            cylinderFinal.position.set (32,-2.99,-202);            
+            cylinderFinal.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinderFinal.scale.set(1,1,1)
+            scene.add(cylinderFinal)
+
+            var xSpeed = 0.1;
+            var ySpeed = 0.1;
+            let cameraSpeed = 0.1;
+
+            document.addEventListener("keydown", onDocumentKeyDown, false); //list of keycodes: https://www.toptal.com/developers/keycode/table-of-all-keycodes
             function onDocumentKeyDown(event) {
                 var keyCode = event.which;
-                if (keyCode == 87) {
-                    cube.position.z += ySpeed;
-                } else if (keyCode == 83) {
+                test = finalPath.position;
+                if (keyCode == 87) {//w
                     cube.position.z -= ySpeed;
-                } else if (keyCode == 65) {
+                    camera2.position.z -= cameraSpeed;
+                } else if (keyCode == 83) {//s
+                    cube.position.z += ySpeed;
+                    camera2.position.z += cameraSpeed;
+                } else if (keyCode == 65) {//a
                     cube.position.x -= xSpeed;
-                } else if (keyCode == 68) {
+                    camera2.position.x -= cameraSpeed;
+                } else if (keyCode == 68) {//d
                     cube.position.x += xSpeed;
-                } else if (keyCode == 32) {
+                    camera2.position.x += cameraSpeed;
+                } else if (keyCode == 32) {//space
                     cube.position.set(0, 0, 0);
                 }
+                else if(keyCode == 81) {//q
+                  camera2.rotation.y += 0.1;
+                }
+                else if(keyCode == 69) {//e
+                  camera2.rotation.y -= 0.1;
+                }
+                else if(keyCode == 38) {//up
+                  camera1.position.z -= 1;
+                }
+                else if(keyCode == 40) {//down
+                  camera1.position.z += 1;
+                }
+                else if(keyCode == 37) {//left
+                  camera1.position.x -= 1;
+                }
+                else if(keyCode == 39) {//right
+                  camera1.position.x += 1;
+                }
+                else if(keyCode == 73) {//test up
+                  test.z -= 1;
+                  console.log(test.z + " Z");
+                }
+                else if(keyCode == 75) {//test down
+                  test.z += 1;
+                  console.log(test.z + " Z");
+                }
+                else if(keyCode == 74) {//test left
+                  test.x -= 1;
+                  console.log(test.x + " X");
+                }
+                else if(keyCode == 76) {//test right
+                  test.x += 1;
+                  console.log(test.x + " X");
             };
+          }
   
               function animate() {
                   requestAnimationFrame( animate );
-                  if(cube.position.z>-50){ //negative z values go away from the camera
+                  /*if(cube.position.z>-50){ //negative z values go away from the camera
                     cube.position.z -= 0.1;
 
                     camera2.position.z -= 0.1;
                     
-                  }
+                  }*/
                  // camera2.rotation.y -= 0.01;
                   //console.log(camera2.rotation.y);
                   //cylinder.rotation.x += (1/360);
