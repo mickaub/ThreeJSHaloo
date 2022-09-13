@@ -4,15 +4,54 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
         <title>First Three JS Project</title> <!--Tutorial located at: https://medium.com/@benjamin.c.coleman/the-beginners-guide-to-beginning-three-js-c36b8947c2aa -->
-    </head>
+        <style>
+
+          body{
+            background-color: blue;
+          }
+          #canvas {
+            width: 90%;
+            height: 90%;
+            margin-top: 5%;
+            margin-left: 2.2%;
+            margin-right: 2.5%;
+          }
+
+          #timer{
+            color: black;
+          }
+        </style>
+      </head>
     <body>        
         <!--<script src="https://raw.githubusercontent.com/mrdoob/three.js/dev/build/three.js" type="text/javascript"        
           "https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"integrity="sha512-yNJzAsg5JyP91u+sLHlUDULMBd3hmEiVkYeeN1cQBKaLZ7EyT6oH2u5THNIRM2Fu6VKcZJv+F/QAp1h/qzy9Ow==" crossorigin="anonymous"></script>
         ></script>  -->               
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
-        
+        <div id="canvas"></div>
+        <div id="timer"></div>
             <script>
+              let display = document.getElementById("#timer");
+              function startTimer(duration,display) {
+                let time = duration,minutes,seconds;
+                setInterval(function(){
+                  minutes = parseInt(timer/60,10);
+                  seconds = parseInt(timer % 60,10);
+                  minutes = minutes < 10 ? "0" + minutes : minutes;
+                  seconds = seconds < 10 ? "0" + seconds : seconds;
+                  display= minutes + ":" + seconds;
+                  if(--time < 0){
+                    time = duration;
+                  }                
+                },1000)
+              }
+
+              //timer = document.getElementById("timer");
+              window.onload = function(){
+                let twominutes = 60*2;               
+                startTimer(twominutes,display);
+              }
+
               const scene = new THREE.Scene()
               scene.background = new THREE.Color(0xbfe3dd); //background color
               const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
@@ -20,10 +59,10 @@
               /*Camera1 is left, Camera2 is right*/
               const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
               
-           
-              renderer.setSize(window.innerWidth, window.innerHeight)
+              container = document.getElementById("canvas");
+              renderer.setSize(window.innerWidth*0.95, window.innerHeight*0.9)
               //renderer.setClearColor("#222222")
-              document.body.appendChild(renderer.domElement)
+             container.appendChild(renderer.domElement);//appendChild(renderer.domElement)
               //camera1.position.z = 5
              // camera1.position.x = -3
              // camera2.position.z = -48
@@ -58,6 +97,25 @@
                 scene.add( object2 );                
               }            
               );
+              let object3;
+              loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/ghost.glb',
+              function ( gltf ) {
+                var object3 = gltf.scene;                
+                object3.position.set(4,1, 50);                
+                object3.scale.set(1,1,1); 
+                scene.add( object3 );                
+              }            
+              );
+              let object4;
+              loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/warthog.glb',
+              function ( gltf ) {
+                object4 = gltf.scene;                
+                object4.position.set(0,1, 50);                
+                object4.scale.set(1,1,1); 
+                object4.add(camera2);
+                scene.add( object4 );    
+              }            
+              );
 
               var ambientLight = new THREE.AmbientLight (0x111111);
               scene.add(ambientLight);
@@ -73,9 +131,9 @@
               scene.add(cube)             
               
               camera2.position.x=0;
-              camera2.position.z=5;
-              camera2.position.y=2;
-              cube.add(camera2);
+              camera2.position.z=10;
+              camera2.position.y=5;
+              //cube.add(camera2);
 
             const sphereGeometry = new THREE.IcosahedronGeometry( 1, 5 ); //radius and complexity
             //const sphereMaterial = new THREE.MeshBasicMaterial( { color: 0xBB00FF } );
@@ -112,7 +170,8 @@
           });
           const sphere = new THREE.Mesh(sphereGeometry, Gradmaterial);
             //const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-            sphere.position.set (3,0.5,0); //x y z in threeJS, for blender x z y
+            sphere.position.set (32,200,-200); //x y z in threeJS, for blender x z y
+            sphere.scale.set(10,10,10)
             scene.add(sphere)
 
             const material4 = new THREE.MeshBasicMaterial({color: 0x8855AA});
@@ -189,7 +248,7 @@
             scene.add(cylinderFinal)
 
             var xSpeed = 0.1;
-            var ySpeed = 0.1;
+            var ySpeed = 0.5;
             let cameraSpeed = 0.1;
             let rotationValue = 0.01;
 
@@ -198,30 +257,30 @@
             document.addEventListener("keydown", onDocumentKeyDown, false); //list of keycodes: https://www.toptal.com/developers/keycode/table-of-all-keycodes
             function onDocumentKeyDown(event) {
                 var keyCode = event.which;
-                test = camera2.position;
+                test = object4.position;
                 if (keyCode == 87) {//w
                     //cube.position.z -= ySpeed;
-                    cube.translateZ((ySpeed)*-1); //moves in rotated direction
+                    object4.translateZ((ySpeed)*-1); //moves in rotated direction
                    // camera2.translateZ((ySpeed)*-1);
                 }  if (keyCode == 83) {//s
                     //cube.position.z += ySpeed;
-                    cube.translateZ(ySpeed);
+                    object4.translateZ(ySpeed);
                    // camera2.translateZ(ySpeed);
                 }  if (keyCode == 65) {//a
                     //cube.position.x -= xSpeed;
-                    cube.rotation.y += 0.1;
+                    object4.rotation.y += 0.1;
                    // camera2.rotation.y += 0.1;
                     //camera2.position.z += rotationValue;
                     //camera2.position.x += 0.22;
                     
                 } if (keyCode == 68) {//d
                     //cube.position.x += xSpeed;
-                    cube.rotation.y -= 0.1;
+                    object4.rotation.y -= 0.1;
                     //camera2.rotation.y -= 0.1;
                   //  camera2.position.z -= 0.16;
-                  //  camera2.position.x -= 0.16;
+                  //  camera2.position.x -= 0.16; 
                     
-                } else if (keyCode == 32) {//space
+                }  if (keyCode == 32) {//space
                     cube.position.set(0, 0, 0);
                 }
                 else if(keyCode == 81) {//q
@@ -263,12 +322,9 @@
               function animate() {
                   requestAnimationFrame( animate );
                   
-                  /*if(cube.position.z>-50){ //negative z values go away from the camera
-                    cube.position.z -= 0.1;
-
-                    camera2.position.z -= 0.1;
-                    
-                  }*/
+                  if(sphere.position.y>25){ //negative z values go away from the camera
+                    sphere.position.y -= 0.025;     
+                  }
                  // camera2.rotation.y -= 0.01;
                   //console.log(camera2.rotation.y);
                   //cylinder.rotation.x += (1/360);
