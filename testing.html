@@ -17,8 +17,12 @@
             margin-right: 2.5%;
           }
 
-          #timer{
-            color: black;
+          #time{
+            color: white;
+            margin-top: -98%;
+            top: 0;
+            text-align: center;
+            font-size: 35px;
           }
         </style>
       </head>
@@ -29,28 +33,30 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
         <div id="canvas"></div>
-        <div id="timer"></div>
+        <div id="time"></div>
             <script>
-              let display = document.getElementById("#timer");
-              function startTimer(duration,display) {
-                let time = duration,minutes,seconds;
-                setInterval(function(){
-                  minutes = parseInt(timer/60,10);
-                  seconds = parseInt(timer % 60,10);
+              function startTimer(duration, display) {
+              var timer = duration, minutes, seconds;
+              setInterval(function () {
+                  minutes = parseInt(timer / 60, 10)
+                  seconds = parseInt(timer % 60, 10);
+
                   minutes = minutes < 10 ? "0" + minutes : minutes;
                   seconds = seconds < 10 ? "0" + seconds : seconds;
-                  display= minutes + ":" + seconds;
-                  if(--time < 0){
-                    time = duration;
-                  }                
-                },1000)
-              }
 
-              //timer = document.getElementById("timer");
-              window.onload = function(){
-                let twominutes = 60*2;               
-                startTimer(twominutes,display);
-              }
+                  display.textContent = minutes + ":" + seconds;
+
+                  if (--timer < 0) {
+                      timer = duration;
+                  }
+              }, 1000);
+               }
+
+              window.onload = function () {
+                  var fiveMinutes = 60 * 1,
+                      display = document.querySelector('#time');
+                  startTimer(fiveMinutes, display);
+              };
 
               const scene = new THREE.Scene()
               scene.background = new THREE.Color(0xbfe3dd); //background color
@@ -170,7 +176,7 @@
           });
           const sphere = new THREE.Mesh(sphereGeometry, Gradmaterial);
             //const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-            sphere.position.set (32,200,-200); //x y z in threeJS, for blender x z y
+            sphere.position.set (32,205,-200); //x y z in threeJS, for blender x z y
             sphere.scale.set(10,10,10)
             scene.add(sphere)
 
@@ -323,7 +329,7 @@
                   requestAnimationFrame( animate );
                   
                   if(sphere.position.y>25){ //negative z values go away from the camera
-                    sphere.position.y -= 0.025;     
+                    sphere.position.y -= 0.05;     
                   }
                  // camera2.rotation.y -= 0.01;
                   //console.log(camera2.rotation.y);
