@@ -7,10 +7,10 @@
     </head>
     <body>        
         <!--<script src="https://raw.githubusercontent.com/mrdoob/three.js/dev/build/three.js" type="text/javascript"        
-        ></script>  
-        <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js" type="text/javascript"></script>      -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js" integrity="sha512-yNJzAsg5JyP91u+sLHlUDULMBd3hmEiVkYeeN1cQBKaLZ7EyT6oH2u5THNIRM2Fu6VKcZJv+F/QAp1h/qzy9Ow==" crossorigin="anonymous"></script>
-        <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
+          "https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"integrity="sha512-yNJzAsg5JyP91u+sLHlUDULMBd3hmEiVkYeeN1cQBKaLZ7EyT6oH2u5THNIRM2Fu6VKcZJv+F/QAp1h/qzy9Ow==" crossorigin="anonymous"></script>
+        ></script>  -->               
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
         
             <script>
               const scene = new THREE.Scene()
@@ -32,10 +32,39 @@
             
               
               //camera1.position.set(5,0,5); //x y z, x z y
-              camera1.position.z = -87
-              camera1.position.x = -23
+              camera1.position.z = -200
+              camera1.position.x = 30
               camera1.position.y = 50
               camera1.rotation.x = -((Math.PI/2)+0.0)
+
+              const loader = new THREE.GLTFLoader();
+              //loader.crossOrigin = true;
+              loader.load( 'https://raw.githubusercontent.com/mickaub/ThreeJS/main/Craig.glb', function ( gltf ) {
+                var object = gltf.scene;
+                let copy = gltf.scene.clone(); //clone an imported object
+                object.position.set(0,2, 0);
+                copy.position.set(30,2,-180)
+                object.scale.set(0.5,0.5,0.5);     
+                copy.scale.set(0.5,0.5,0.5);   
+                scene.add( object );
+                scene.add(copy);
+              }            
+              );
+              loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/Ship.glb',
+              function ( gltf ) {
+                var object2 = gltf.scene;                
+                object2.position.set(32,0, -200);                
+                object2.scale.set(2,2,2); 
+                scene.add( object2 );                
+              }            
+              );
+
+              var ambientLight = new THREE.AmbientLight (0x111111);
+              scene.add(ambientLight);
+
+              var pointLight = new THREE.PointLight (0xffffff); //point light turns black gltf normal colours
+              pointLight.position.set (0,300,200);
+              scene.add (pointLight);
   
               const geometry1 = new THREE.BoxGeometry(1, 1, 1)
               const material1 = new THREE.MeshBasicMaterial({color: 0x800080})
@@ -164,7 +193,7 @@
             document.addEventListener("keydown", onDocumentKeyDown, false); //list of keycodes: https://www.toptal.com/developers/keycode/table-of-all-keycodes
             function onDocumentKeyDown(event) {
                 var keyCode = event.which;
-                test = camera2.position;
+                test = camera1.position;
                 if (keyCode == 87) {//w
                     //cube.position.z -= ySpeed;
                     cube.translateZ((ySpeed)*-1); //moves in rotated direction
