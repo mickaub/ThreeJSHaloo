@@ -106,22 +106,31 @@
               let object3;
               loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/ghost.glb',
               function ( gltf ) {
-                var object3 = gltf.scene;                
-                object3.position.set(4,1, 50);                
+                object3 = gltf.scene;                //got rid of var
+                //object3.position.set(4,1, 50);                
                 object3.scale.set(1,1,1); 
-                scene.add( object3 );                
+                object3.position.set(3,0,2);                
+                scene.add( object3 );                                
               }            
               );
               let object4;
+              let player1BB;
+              //let player1BB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
               loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/warthog.glb',
               function ( gltf ) {
                 object4 = gltf.scene;                
                 object4.position.set(0,1, 50);                
                 object4.scale.set(1,1,1); 
-                object4.add(camera2);
+                object4.add(camera2);   
+                object4.add(object3);             
                 scene.add( object4 );    
+                player1BB = new THREE.Box3().setFromObject(object4); //NOT player1BB = new THREE.Box3(new THREE.Vector3(),new THREE.Vector3()) and then player1BB.Setfromobject(object)
+                console.log(player1BB);
               }            
               );
+
+              
+            
 
               var ambientLight = new THREE.AmbientLight (0x111111);
               scene.add(ambientLight);
@@ -186,7 +195,8 @@
             cylinderInitial.position.set (0,-2.99,40);            
             cylinderInitial.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
             cylinderInitial.scale.set(2,1,2)
-            scene.add(cylinderInitial)
+            let cIBB = new THREE.Box3().setFromObject(cylinderInitial);
+           scene.add(cylinderInitial)
 
             //2 first, 4 first circle, 3 second, 5 second circle, 6 third, 7 third circle, 8 fourth
             //9 fourth circle, 10 final path, 11 final circle, 12 airship
@@ -194,6 +204,7 @@
             const material2 = new THREE.MeshBasicMaterial({color: 0xAAAAAA})
             const cube2 = new THREE.Mesh (geometry2,material2)
             cube2.position.set (0,-1,0)
+            let cu2BB = new THREE.Box3().setFromObject(cube2);
             scene.add(cube2)
 
             const geometry3 = new THREE.BoxGeometry(10,1,60)
@@ -201,35 +212,41 @@
             const cube3 = new THREE.Mesh (geometry3,material3)
             cube3.position.set (33,-1,-64)
             cube3.rotation.setFromVector3(new THREE.Vector3(0,-1,0));
+            let cu3 = new THREE.Box3().setFromObject(cube3);
             scene.add(cube3)
 
             const thirdPath = new THREE.Mesh (geometry3,material3)
             thirdPath.position.set (25,-1,-87)
             thirdPath.rotation.setFromVector3(new THREE.Vector3(0,(Math.PI/2),0))
             thirdPath.scale.set(1,1,1.3)
+            let P3 = new THREE.Box3().setFromObject(thirdPath);
             scene.add(thirdPath)
 
             const fourthPath = new THREE.Mesh (geometry3,material3)
             fourthPath.position.set (4,-1,-114)
             fourthPath.rotation.setFromVector3(new THREE.Vector3(0,(Math.PI*0.75),0))
+            let P4 = new THREE.Box3().setFromObject(fourthPath);
             scene.add(fourthPath)
 
             const finalPath = new THREE.Mesh (geometry3,material3)
             finalPath.position.set (32,-1,-181)
             finalPath.rotation.setFromVector3(new THREE.Vector3(0,0,0))
+            let PF = new THREE.Box3().setFromObject(finalPath);
             scene.add(finalPath)
 
             const geometry4 = new THREE.CylinderGeometry(2,2,10,8); //top radius, bottom radius, height, radial segments           
             const cylinder = new THREE.Mesh(geometry4,material4);
             cylinder.position.set (0,-2.99,-41);            
-            cylinder.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+            cylinder.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc           
             cylinder.scale.set(6.5,0.5,6)
+            let Cyl = new THREE.Box3().setFromObject(cylinder);
             scene.add(cylinder)
             
             const cylinderSecond = new THREE.Mesh(geometry5,material4);
             cylinderSecond.position.set (65,-2.99,-87);            
             cylinderSecond.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
             cylinderSecond.scale.set(1,1,1)
+            let C2 = new THREE.Box3().setFromObject(cylinderSecond);
             scene.add(cylinderSecond)
 
             
@@ -237,6 +254,7 @@
             cylinderThird.position.set (-23,-2.99,-87);            
             cylinderThird.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
             cylinderThird.scale.set(1,1,1)
+            let C3 = new THREE.Box3().setFromObject(cylinderThird);
             scene.add(cylinderThird)
 
             
@@ -244,6 +262,7 @@
             cylinderFourth.position.set (32,-2.99,-142);            
             cylinderFourth.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
             cylinderFourth.scale.set(1,1,1)
+            let C4 = new THREE.Box3().setFromObject(cylinderFourth);
             scene.add(cylinderFourth)
 
             
@@ -251,6 +270,7 @@
             cylinderFinal.position.set (32,-2.99,-202);            
             cylinderFinal.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
             cylinderFinal.scale.set(1,1,1)
+            let C5 = new THREE.Box3().setFromObject(cylinderFinal);
             scene.add(cylinderFinal)
 
             var xSpeed = 0.1;
@@ -264,17 +284,23 @@
             function onDocumentKeyDown(event) {
                 var keyCode = event.which;
                 test = object4.position;
+                
                 if (keyCode == 87) {//w
                     //cube.position.z -= ySpeed;
                     object4.translateZ((ySpeed)*-1); //moves in rotated direction
+                    object3.position.x -=0.1;
+                    //object3.translateZ((ySpeed)*-1);
                    // camera2.translateZ((ySpeed)*-1);
                 }  if (keyCode == 83) {//s
                     //cube.position.z += ySpeed;
                     object4.translateZ(ySpeed);
+                    object3.position.x +=0.1;
+                    
                    // camera2.translateZ(ySpeed);
                 }  if (keyCode == 65) {//a
                     //cube.position.x -= xSpeed;
                     object4.rotation.y += 0.1;
+                    
                    // camera2.rotation.y += 0.1;
                     //camera2.position.z += rotationValue;
                     //camera2.position.x += 0.22;
@@ -282,12 +308,14 @@
                 } if (keyCode == 68) {//d
                     //cube.position.x += xSpeed;
                     object4.rotation.y -= 0.1;
+                    
                     //camera2.rotation.y -= 0.1;
                   //  camera2.position.z -= 0.16;
                   //  camera2.position.x -= 0.16; 
                     
                 }  if (keyCode == 32) {//space
-                    cube.position.set(0, 0, 0);
+                  console.log(player1BB);
+                  console.log(cIBB);
                 }
                 else if(keyCode == 81) {//q
                   //camera2.rotation.y += 0.1;
@@ -323,14 +351,34 @@
                   test.x -= 0.1;
                   console.log(test.x + " X");
             };
+            player1BB = new THREE.Box3().setFromObject(object4); //must use NEW to work
+            //cIBB = new THREE.Box3().setFromObject(cylinderInitial);
+            
+            function checkCollissions(){ //cIBB cu2BB cu3 P3 P4 PF Cy C2 C3 C4 C5
+              if(player1BB.intersectsBox(cIBB)==false&&player1BB.intersectsBox(cu2BB)==false
+              &&player1BB.intersectsBox(cu3)==false && player1BB.intersectsBox(P3)==false 
+              &&player1BB.intersectsBox(P4)==false && player1BB.intersectsBox(PF)==false
+              && player1BB.intersectsBox(Cyl)==false && player1BB.intersectsBox(C2)==false
+              && player1BB.intersectsBox(C3)==false && player1BB.intersectsBox(C4)==false
+              && player1BB.intersectsBox(C5)==false
+              ){
+                console.log("bad");
+              }
+            }
+            checkCollissions();            
+             
           }
   
               function animate() {
+                  
+                
                   requestAnimationFrame( animate );
                   
                   if(sphere.position.y>25){ //negative z values go away from the camera
                     sphere.position.y -= 0.05;     
                   }
+                  
+                  
                  // camera2.rotation.y -= 0.01;
                   //console.log(camera2.rotation.y);
                   //cylinder.rotation.x += (1/360);
