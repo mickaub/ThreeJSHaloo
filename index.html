@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+        <title>First Three JS Project</title> <!--Tutorial located at: https://medium.com/@benjamin.c.coleman/the-beginners-guide-to-beginning-three-js-c36b8947c2aa -->
+        <style>
+          body{
+            background-color: blue;
+          }
+          #canvas {
+            width: 90%;
+            height: 90%;
+            margin-top: 5%;
+            margin-left: 2.2%;
+            margin-right: 2.5%;
+          }
+
+          #time{
+            color: white;
+            margin-top: -98%;
+            top: 0;
+            text-align: center;
+            font-size: 35px;
+          }
+          #over{
+            color:white;
+            padding: top 40%;
+            padding-bottom: 40%;
+            text-align: center;
+            font-size: 100px;
+            opacity: 0%;
+          }
+          .button{
+            position: absolute;
+            top: 95%;
+            display: absolute;
+          }
+          #button1{            
+            position: absolute;
+            left: 20%;
+            top: 80%;
+          }
+          #button2{
+            position: absolute;
+            left: 10%;
+            top: 90%;
+          }
+          #button3{
+            position: absolute;
+            left: 20%;
+            top: 90%;
+          }
+          #button4{
+            position: absolute;
+            left: 35%;
+            top: 90%;
+          }
+          #button5{
+            position: absolute;
+            left: 70%;
+            top: 80%;
+          }
+          #button6{
+            position: absolute;
+            left: 70%;
+            top: 90%;
+          }
+          #button7{
+            position: absolute;
+            left: 60%;
+            top: 90%;
+          }
+          #button8{
+            position: absolute;
+            left: 85%;
+            top: 90%;
+          }
+          #haloo{
+            position: absolute;
+            left: 45%;
+            top: 90%;
+            color: white;
+            font-size: 40px;            
+          }
+        </style>
+      </head>
+<body>                   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
+  <div id="canvas"></div>
+  <div id="time"></div>
+  <p id="over"></p>
+  <div id= btnGroup>
+    <button onclick="control1(1)" style="height:5%;width:10%;" id="button1">Forward</button>
+    <span></span>
+    <button onclick="control1(3)" style="height:5%;width:5%;" id="button2" >Left</button>
+    <button onclick="control1(2)" style="height:5%;width:10%;" id="button3" >Backward</button>
+    <button onclick="control1(4)" style="height:5%;width:5%;" id="button4" >Right</button>
+    <button onclick="control1(5)" style="height:5%;width:10%;" id="button5" >Forward</button>
+    <button onclick="control1(6)" style="height:5%;width:10%;" id="button6" >Backward</button>
+    <button onclick="control1(7)" style="height:5%;width:5%;" id="button7" >Left</button>
+    <button onclick="control1(8)" style="height:5%;width:5%;" id="button8" >Right</button>
+  </div>
+  <p id="haloo">HALOO</p>
+  <script>
+    document.getElementById('over').innerHTML = "GAME OVER";
+    function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          document.getElementById('over').style.opacity = "100%";
+            setInterval(function(){
+              window.location.reload();
+            },5000);  
+        }
+    }, 1000);
+      }
+
+    window.onload = function () {
+        var fiveMinutes = 60 * 1,
+            display = document.querySelector('#time');
+        startTimer(fiveMinutes, display);
+    };
+
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0xbfe3dd); //background color
+    const camera1 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 ) /* field of view, aspect ratio, near clipping, far clipping*/
+    const camera2 = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
+    /*Camera1 is left, Camera2 is right*/
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
+    let spinCount = 0;
+    
+    container = document.getElementById("canvas");
+    renderer.setSize(window.innerWidth*0.95, window.innerHeight*0.9)             
+    container.appendChild(renderer.domElement);//appendChild(renderer.domElement)
+    
+    const loader = new THREE.GLTFLoader();             
+    let craig;
+    let copy;
+    loader.load( 'https://raw.githubusercontent.com/mickaub/ThreeJS/main/Craig.glb', function ( gltf ) {
+      craig = gltf.scene; //no redeclaring
+      copy = gltf.scene.clone(); //clone an imported object
+      craig.position.set(0,2, 0);
+      copy.position.set(30,2,-180)
+      craig.scale.set(0.5,0.5,0.5);     
+      copy.scale.set(0.5,0.5,0.5);   
+      scene.add(craig);
+      scene.add(copy);
+      craigBox = new THREE.Box3().setFromObject(craig);
+      craig2Box = new THREE.Box3().setFromObject(copy);
+    }                         
+    );              
+    loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/Ship.glb',
+    function ( gltf ) {
+      var object2 = gltf.scene;                
+      object2.position.set(32,0, -200);                
+      object2.scale.set(2,2,2); 
+      scene.add( object2 );                
+    }            
+    );
+    let object3;
+    let player2BB;
+    loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/ghost.glb',
+    function ( gltf ) {
+      object3 = gltf.scene;                //got rid of var                              
+      object3.scale.set(1,2,1); 
+      object3.position.set(3,1,52);   
+      object3.add(camera1);             
+      scene.add( object3 );   
+      camera1.scale.set(1,0.5,1);   
+      player2BB = new THREE.Box3().setFromObject(object3);                          
+    }            
+    );
+    let object4;
+    let player1BB;              
+    loader.load('https://raw.githubusercontent.com/mickaub/ThreeJS/main/warthog.glb',
+    function ( gltf ) {
+      object4 = gltf.scene;                
+      object4.position.set(0,1, 50);                
+      object4.scale.set(1,1,1); 
+      object4.add(camera2);                     
+      scene.add( object4 );    
+      player1BB = new THREE.Box3().setFromObject(object4); //NOT player1BB = new THREE.Box3(new THREE.Vector3(),new THREE.Vector3()) and then player1BB.Setfromobject(object)
+      console.log(player1BB);
+    }            
+    );
+    
+    let hit = 0;
+    let hit2 = 0;
+
+    var ambientLight = new THREE.AmbientLight (0x111111);
+    scene.add(ambientLight);
+
+    var pointLight = new THREE.PointLight (0xffffff); //point light turns black gltf normal colours
+    pointLight.position.set (0,300,200);
+    scene.add (pointLight);
+
+    const geometry1 = new THREE.BoxGeometry(1, 1, 1)
+    const material1 = new THREE.MeshBasicMaterial({color: 0x800080})                
+    
+    camera2.position.x=0;
+    camera2.position.z=10;
+    camera2.position.y=5;
+    camera1.position.x=0;
+    camera1.position.z=10;
+    camera1.position.y=2.5;
+    
+  const sphereGeometry = new THREE.IcosahedronGeometry( 1, 5 ); //radius and complexity
+  
+  var Gradmaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    color1: {
+      value: new THREE.Color("red")
+    },
+    color2: {
+      value: new THREE.Color("purple")
+    }
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform vec3 color1;
+    uniform vec3 color2;            
+    varying vec2 vUv;              
+    void main() {                
+      gl_FragColor = vec4(mix(color1, color2, vUv.y), 1.0);
+    }
+  `,
+  wireframe: true
+});
+  const sphere = new THREE.Mesh(sphereGeometry, Gradmaterial);            
+  sphere.position.set (32,205,-200); //x y z in threeJS, for blender x z y
+  sphere.scale.set(10,10,10)
+  scene.add(sphere)
+
+  const material4 = new THREE.MeshBasicMaterial({color: 0x8855AA});
+  const geometry5 = new THREE.CylinderGeometry(12,12,5,8);
+  const cylinderInitial = new THREE.Mesh(geometry5,material4);           
+  cylinderInitial.position.set (0,-2.99,40);            
+  cylinderInitial.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+  cylinderInitial.scale.set(2,1,2)
+  let cIBB = new THREE.Box3().setFromObject(cylinderInitial);
+  scene.add(cylinderInitial)
+
+  //2 first, 4 first circle, 3 second, 5 second circle, 6 third, 7 third circle, 8 fourth
+  //9 fourth circle, 10 final path, 11 final circle, 12 airship
+  const geometry2 = new THREE.BoxGeometry(10,1,60) //first path
+  const material2 = new THREE.MeshBasicMaterial({color: 0xAAAAAA})
+  const cube2 = new THREE.Mesh (geometry2,material2)
+  cube2.position.set (0,-1,0)
+  cube2.scale.set(1,1,1.4)
+  let cu2BB = new THREE.Box3().setFromObject(cube2);
+  scene.add(cube2)
+
+  const geometry3 = new THREE.BoxGeometry(10,1,60)
+  const material3 = new THREE.MeshBasicMaterial({color: 0xBBBBBB})
+  const finalPath = new THREE.Mesh (geometry3,material3)
+  finalPath.position.set (32,-1,-181)
+  finalPath.rotation.setFromVector3(new THREE.Vector3(0,0,0))
+  let PF = new THREE.Box3().setFromObject(finalPath);
+  scene.add(finalPath)
+
+  const geometry4 = new THREE.CylinderGeometry(2,2,10,8); //top radius, bottom radius, height, radial segments           
+  const cylinder = new THREE.Mesh(geometry4,material4);
+  cylinder.position.set (0,-2.99,-50);            
+  cylinder.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc           
+  cylinder.scale.set(6.5,0.5,6)
+  let Cyl = new THREE.Box3().setFromObject(cylinder);
+  scene.add(cylinder)
+              
+  const cube3 = new THREE.Mesh (geometry3,material3)//2nd path
+  cube3.position.set (45,-1,-50)
+  cube3.rotation.setFromVector3(new THREE.Vector3(0,(Math.PI/2),0));
+  cube3.scale.set(1,1,1.5)
+  let cu3 = new THREE.Box3().setFromObject(cube3);            
+  scene.add(cube3)
+
+  const cylinderSecond = new THREE.Mesh(geometry5,material4);
+  cylinderSecond.position.set (100,-2.99,-50);            
+  cylinderSecond.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+  cylinderSecond.scale.set(1,1,1)
+  let C2 = new THREE.Box3().setFromObject(cylinderSecond);
+  scene.add(cylinderSecond)
+
+  const thirdPath = new THREE.Mesh (geometry3,material3)
+  thirdPath.position.set (100,-1,-95)
+  thirdPath.scale.set(1,1,1.3)
+  let P3 = new THREE.Box3().setFromObject(thirdPath);
+  scene.add(thirdPath)
+  
+  const cylinderThird = new THREE.Mesh(geometry5,material4);
+  cylinderThird.position.set (100,-2.99,-142);            
+  cylinderThird.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+  cylinderThird.scale.set(1,1,1)
+  let C3 = new THREE.Box3().setFromObject(cylinderThird);
+  scene.add(cylinderThird)
+
+  const fourthPath = new THREE.Mesh (geometry3,material3)
+  fourthPath.position.set (60,-1,-142)
+  fourthPath.rotation.setFromVector3(new THREE.Vector3(0,(Math.PI*0.5),0))
+  let P4 = new THREE.Box3().setFromObject(fourthPath);
+  scene.add(fourthPath)
+  
+  const cylinderFourth = new THREE.Mesh(geometry5,material4);
+  cylinderFourth.position.set (32,-2.99,-142);            
+  cylinderFourth.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+  cylinderFourth.scale.set(1,1,1)
+  let C4 = new THREE.Box3().setFromObject(cylinderFourth);
+  scene.add(cylinderFourth)
+  
+  const cylinderFinal = new THREE.Mesh(geometry5,material4);
+  cylinderFinal.position.set (32,-2.99,-202);            
+  cylinderFinal.rotation.setFromVector3 (new THREE.Vector3(0,(Math.PI/8),0)); //rotation uses radians so use PIE/2 for 90deg, PIE/4 for 45 etc
+  cylinderFinal.scale.set(1,1,1)
+  let C5 = new THREE.Box3().setFromObject(cylinderFinal);
+  scene.add(cylinderFinal)
+
+  var xSpeed = 0.1;
+  var ySpeed = 0.5;
+  let cameraSpeed = 0.1;
+  let rotationValue = 0.01;
+  let oneMove = 0;
+  //rotate around cube code at https://codepen.io/vidark/pen/JNNPPJ
+  function checkCollissions(){ //cIBB cu2BB cu3 P3 P4 PF Cy C2 C3 C4 C5
+    if(player1BB.intersectsBox(cIBB)==false&&player1BB.intersectsBox(cu2BB)==false
+    &&player1BB.intersectsBox(cu3)==false && player1BB.intersectsBox(P3)==false 
+    &&player1BB.intersectsBox(P4)==false && player1BB.intersectsBox(PF)==false
+    && player1BB.intersectsBox(Cyl)==false && player1BB.intersectsBox(C2)==false
+    && player1BB.intersectsBox(C3)==false && player1BB.intersectsBox(C4)==false
+    && player1BB.intersectsBox(C5)==false
+    ){
+      console.log("bad"); 
+      spinCount = 50;              
+    }              
+    if(player1BB.intersectsBox(craigBox)&&hit==0){
+      craig.rotation.x = -90;
+      hit = 1;
+    }
+    if(player1BB.intersectsBox(craig2Box)&&hit2==0){
+      copy.rotation.x = -90;
+      hit2 = 1;
+    }
+    if(player2BB.intersectsBox(cIBB)==false&&player2BB.intersectsBox(cu2BB)==false
+    &&player2BB.intersectsBox(cu3)==false && player2BB.intersectsBox(P3)==false 
+    &&player2BB.intersectsBox(P4)==false && player2BB.intersectsBox(PF)==false
+    && player2BB.intersectsBox(Cyl)==false && player2BB.intersectsBox(C2)==false
+    && player2BB.intersectsBox(C3)==false && player2BB.intersectsBox(C4)==false
+    && player2BB.intersectsBox(C5)==false
+    ){
+      console.log("bad"); 
+      spinCount = 50;              
+    }              
+    if(player2BB.intersectsBox(craigBox)&&hit==0){
+      craig.rotation.x = -90;
+      hit = 1;
+    }
+    if(player2BB.intersectsBox(craig2Box)&&hit2==0){
+      copy.rotation.x = -90;
+      hit2 = 1;
+    }
+    if(player1BB.intersectsBox(C5) || player2BB.intersectsBox(C5)){
+        document.getElementById('over').innerHTML = "YOU WIN!";
+        document.getElementById('over').style.opacity = "100%";
+        setInterval(function(){
+              window.location.reload();
+            },5000);  
+        }      
+      }   
+
+document.addEventListener("keydown", onDocumentKeyDown, false); //list of keycodes: https://www.toptal.com/developers/keycode/table-of-all-keycodes
+function onDocumentKeyDown(event) {
+      var keyCode = event.which;
+      test = object3.position;
+      craigMove = craig.position;
+      
+      if (keyCode == 87) {//w
+          object3.translateZ((ySpeed)*-1); 
+      }  
+      if (keyCode == 83) {//s                 
+          object3.translateZ(ySpeed);
+      } 
+      if (keyCode == 65) {//a                    
+          object3.rotation.y += 0.1;
+      }
+        if (keyCode == 68) {//d
+        object3.rotation.y -= 0.1;                   
+      } 
+      else if(keyCode == 38) {//up
+        object4.translateZ((ySpeed)*-1);
+      }
+      else if(keyCode == 40) {//down
+        object4.translateZ(ySpeed);
+      }
+      else if(keyCode == 37) {//left
+      object4.rotation.y += 0.1;               
+      }
+      else if(keyCode == 39) {//right
+        object4.rotation.y -= 0.1;
+      };
+      player1BB = new THREE.Box3().setFromObject(object4); //must use NEW to work            
+      player2BB = new THREE.Box3().setFromObject(object3);     
+      
+        checkCollissions();        
+}  
+let turbo = 0;
+function control1(direction) {
+ 
+    if (direction == 1 && turbo == 0)
+    {
+      turbo=1;
+      console.log("turbo");
+    }
+    if(turbo>=100){
+      turbo=0;
+    }
+    if (direction==1 && turbo<= 100){         
+      let leftP = setInterval(function(){
+        if(turbo<=100){
+        object3.translateZ((ySpeed)*-2);
+        turbo+=1;
+        console.log(turbo);}
+        if (turbo>=100){
+        clearInterval(leftP);
+      }        
+      },500);
+    }
+    if (direction==2){
+      object3.translateZ((ySpeed));
+      turbo+=100;
+    }
+    if (direction==3){
+      object3.rotation.y += 0.1;
+    }
+    if (direction==4){
+      object3.rotation.y -= 0.1;   
+    }
+    
+    if (direction==5 && turbo<= 100){
+      let rightP = setInterval(function(){
+        if(turbo<=100){
+        object4.translateZ((ySpeed)*-2);
+        turbo+=1;
+        console.log(turbo);}
+        if (turbo>=100){
+        clearInterval(rightP);     
+        }
+      },500);   
+      
+    }
+    if (direction==6){
+      object4.translateZ((ySpeed));
+      turbo+=100;
+    }
+    if (direction==7){
+      object4.rotation.y += 0.1;
+    }
+    if (direction==8){
+      object4.rotation.y -= 0.1;   
+    }              
+    
+
+    if(player1BB.intersectsBox(cIBB)==false&&player1BB.intersectsBox(cu2BB)==false
+    &&player1BB.intersectsBox(cu3)==false && player1BB.intersectsBox(P3)==false 
+    &&player1BB.intersectsBox(P4)==false && player1BB.intersectsBox(PF)==false
+    && player1BB.intersectsBox(Cyl)==false && player1BB.intersectsBox(C2)==false
+    && player1BB.intersectsBox(C3)==false && player1BB.intersectsBox(C4)==false
+    && player1BB.intersectsBox(C5)==false
+    ){
+      console.log("bad"); 
+      spinCount = 50;              
+    }              
+    if(player1BB.intersectsBox(craigBox)&&hit==0){
+      craig.rotation.x = -90;
+      hit = 1;
+    }
+    if(player1BB.intersectsBox(craig2Box)&&hit2==0){
+      copy.rotation.x = -90;
+      hit2 = 1;
+    }
+    if(player2BB.intersectsBox(cIBB)==false&&player2BB.intersectsBox(cu2BB)==false
+    &&player2BB.intersectsBox(cu3)==false && player2BB.intersectsBox(P3)==false 
+    &&player2BB.intersectsBox(P4)==false && player2BB.intersectsBox(PF)==false
+    && player2BB.intersectsBox(Cyl)==false && player2BB.intersectsBox(C2)==false
+    && player2BB.intersectsBox(C3)==false && player2BB.intersectsBox(C4)==false
+    && player2BB.intersectsBox(C5)==false
+    ){
+      console.log("bad"); 
+      spinCount = 50;              
+    }              
+    if(player2BB.intersectsBox(craigBox)&&hit==0){
+      craig.rotation.x = -90;
+      hit = 1;
+    }
+    if(player2BB.intersectsBox(craig2Box)&&hit2==0){
+      copy.rotation.x = -90;
+      hit2 = 1;
+    }
+    if(player1BB.intersectsBox(C5) || player2BB.intersectsBox(C5)){
+        document.getElementById('over').innerHTML = "YOU WIN!";
+        document.getElementById('over').style.opacity = "100%";
+        setInterval(function(){
+              window.location.reload();
+            },5000);  
+        }
+      player1BB = new THREE.Box3().setFromObject(object4); //must use NEW to work            
+      player2BB = new THREE.Box3().setFromObject(object3);
+    checkCollissions();
+  }
+
+    function animate() {                  
+      let reset=0;
+        requestAnimationFrame( animate );
+        
+        if(sphere.position.y>25){ //negative z values go away from the camera
+          sphere.position.y -= 0.02;     
+        }
+        if(spinCount>0){
+          object4.rotation.z += 10;
+          object3.rotation.z += 10;
+          spinCount -= 1;     
+          reset = 1;               
+        }
+        if(reset==1&&spinCount==0){
+          object4.position.x = 0;
+          object4.position.y = 1;
+          object4.position.z = 50;
+          object4.rotation.y = 0;
+          object4.rotation.z = 0;
+          object3.position.x = 0;
+          object3.position.y = 1;
+          object3.position.z = 50;
+          object3.rotation.y = 0;
+          object3.rotation.z = 0;
+          reset = 0;
+          object4.position.x = 0;
+          object4.position.y = 1;
+          object4.position.z = 50;  
+          object3.position.x = 2;
+          object3.position.y = 1;
+          object3.position.z = 52;
+        }                                  
+        render();
+        //renderer.render(scene,camera)/*Renderer line needs to be at end of code to work, anything after this line will not be rendered.*/
+    }
+
+    function render() 
+    {
+      let SCREEN_W = window.innerWidth;
+      let SCREEN_H = window.innerHeight;
+      let left = 1;
+      let bottom = 1;
+      let width = SCREEN_W - 2;
+      let height = SCREEN_H - 2;
+
+      renderer.setViewport(left, bottom, Math.floor(width/2), height);
+      renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+      renderer.setScissorTest(true);
+      renderer.setClearColor(new THREE.Color(1, 1, 1));
+      camera1.aspect = Math.floor(width / 2) / height;
+      camera1.updateProjectionMatrix();
+      renderer.render(scene, camera1);
+        
+      left = Math.floor(width / 2); //bottom, width and height are the same                
+      renderer.setViewport(left, bottom, Math.floor(width / 2), height);
+      renderer.setScissor(left, bottom, Math.floor(width / 2), height);
+      renderer.setScissorTest(true);
+      renderer.setClearColor(new THREE.Color(1, 1, 1));
+      camera2.aspect = Math.floor(width / 2) / height;
+      camera2.updateProjectionMatrix();
+      renderer.render(scene, camera2);
+    }
+    animate()
+  </script>      
+</body>
+</html>
