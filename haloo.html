@@ -76,6 +76,13 @@
             left: 85%;
             top: 90%;
           }
+          #haloo{
+            position: absolute;
+            left: 45%;
+            top: 90%;
+            color: white;
+            font-size: 40px;            
+          }
         </style>
       </head>
 <body>                   
@@ -95,6 +102,7 @@
     <button onclick="control1(7)" style="height:5%;width:5%;" id="button7" >Left</button>
     <button onclick="control1(8)" style="height:5%;width:5%;" id="button8" >Right</button>
   </div>
+  <p id="haloo">HALOO</p>
   <script>
     document.getElementById('over').innerHTML = "GAME OVER";
     function startTimer(duration, display) {
@@ -197,10 +205,7 @@
     scene.add (pointLight);
 
     const geometry1 = new THREE.BoxGeometry(1, 1, 1)
-    const material1 = new THREE.MeshBasicMaterial({color: 0x800080})
-    const cube = new THREE.Mesh (geometry1, material1)
-    cube.position.set (-3,0,-50)
-    scene.add(cube)             
+    const material1 = new THREE.MeshBasicMaterial({color: 0x800080})                
     
     camera2.position.x=0;
     camera2.position.z=10;
@@ -383,48 +388,59 @@ function onDocumentKeyDown(event) {
       craigMove = craig.position;
       
       if (keyCode == 87) {//w
-          object4.translateZ((ySpeed)*-1); 
+          object3.translateZ((ySpeed)*-1); 
       }  
       if (keyCode == 83) {//s                 
-          object4.translateZ(ySpeed);
+          object3.translateZ(ySpeed);
       } 
       if (keyCode == 65) {//a                    
-          object4.rotation.y += 0.1;
+          object3.rotation.y += 0.1;
       }
         if (keyCode == 68) {//d
-        object4.rotation.y -= 0.1;                   
+        object3.rotation.y -= 0.1;                   
       } 
       else if(keyCode == 38) {//up
-        object3.translateZ((ySpeed)*-1);
+        object4.translateZ((ySpeed)*-1);
       }
       else if(keyCode == 40) {//down
-        object3.translateZ(ySpeed);
+        object4.translateZ(ySpeed);
       }
       else if(keyCode == 37) {//left
-      object3.rotation.y += 0.1;               
+      object4.rotation.y += 0.1;               
       }
       else if(keyCode == 39) {//right
-        object3.rotation.y -= 0.1;
+        object4.rotation.y -= 0.1;
       };
       player1BB = new THREE.Box3().setFromObject(object4); //must use NEW to work            
       player2BB = new THREE.Box3().setFromObject(object3);     
       
         checkCollissions();        
 }  
-
+let turbo = 0;
 function control1(direction) {
-    let turbo = 0;
-    if (direction==1){
-      turbo == 1;      
-      setInterval(function(){
-        object3.translateZ((ySpeed)*-1);
+ 
+    if (direction == 1 && turbo == 0)
+    {
+      turbo=1;
+      console.log("turbo");
+    }
+    if(turbo>=100){
+      turbo=0;
+    }
+    if (direction==1 && turbo<= 100){         
+      let leftP = setInterval(function(){
+        if(turbo<=100){
+        object3.translateZ((ySpeed)*-2);
+        turbo+=1;
+        console.log(turbo);}
+        if (turbo>=100){
+        clearInterval(leftP);
+      }        
       },500);
-      
-      
     }
     if (direction==2){
       object3.translateZ((ySpeed));
-      return turbo=0;
+      turbo+=100;
     }
     if (direction==3){
       object3.rotation.y += 0.1;
@@ -433,12 +449,21 @@ function control1(direction) {
       object3.rotation.y -= 0.1;   
     }
     
-    if (direction==5){
-      object4.translateZ((ySpeed)*-4);               
+    if (direction==5 && turbo<= 100){
+      let rightP = setInterval(function(){
+        if(turbo<=100){
+        object4.translateZ((ySpeed)*-2);
+        turbo+=1;
+        console.log(turbo);}
+        if (turbo>=100){
+        clearInterval(rightP);     
+        }
+      },500);   
+      
     }
     if (direction==6){
-      twoMove = 0;
-      object4.translateZ((ySpeed)*6);
+      object4.translateZ((ySpeed));
+      turbo+=100;
     }
     if (direction==7){
       object4.rotation.y += 0.1;
