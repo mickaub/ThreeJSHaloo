@@ -88,6 +88,7 @@
 <body>                   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script>
+  
   <div id="canvas"></div>
   <div id="time"></div>
   <p id="over"></p>
@@ -103,7 +104,10 @@
     <button onclick="control1(8)" style="height:5%;width:5%;" id="button8" >Right</button>
   </div>
   <p id="haloo">HALOO</p>
-  <script>
+  <script>  
+    (function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+
+  
     document.getElementById('over').innerHTML = "GAME OVER";
     function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
@@ -130,6 +134,7 @@
             display = document.querySelector('#time');
         startTimer(fiveMinutes, display);
     };
+    
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color(0xbfe3dd); //background color
@@ -139,9 +144,10 @@
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true})
     let spinCount = 0;
     
+    
     container = document.getElementById("canvas");
     renderer.setSize(window.innerWidth*0.95, window.innerHeight*0.9)             
-    container.appendChild(renderer.domElement);//appendChild(renderer.domElement)
+    container.appendChild(renderer.domElement);//appendChild(renderer.domElement)    
     
     const loader = new THREE.GLTFLoader();             
     let craig;
@@ -553,7 +559,7 @@ function control1(direction) {
           object3.position.y = 1;
           object3.position.z = 52;
         }                                  
-        render();
+        render(); //render needs to be called
         //renderer.render(scene,camera)/*Renderer line needs to be at end of code to work, anything after this line will not be rendered.*/
     }
 
@@ -581,7 +587,7 @@ function control1(direction) {
       renderer.setClearColor(new THREE.Color(1, 1, 1));
       camera2.aspect = Math.floor(width / 2) / height;
       camera2.updateProjectionMatrix();
-      renderer.render(scene, camera2);
+      renderer.render(scene, camera2);      
     }
     animate()
   </script>      
